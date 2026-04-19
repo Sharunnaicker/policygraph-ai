@@ -1,0 +1,32 @@
+rules:
+  - name: low_confidence_with_missing_fields
+    description: Ask for clarification when the LLM is uncertain and key fields are absent
+    conditions:
+      confidence: "< 0.4"
+      missing_fields: "non-empty"
+    action: ASK_CLARIFYING_QUESTION
+
+  - name: high_urgency_enterprise
+    description: Always escalate high-urgency issues from enterprise customers
+    conditions:
+      urgency: high
+      customer_tier: enterprise
+    action: ESCALATE_TO_HUMAN
+
+  - name: ambiguous_request
+    description: Retrieve docs when the intent is unclear
+    conditions:
+      ambiguity: true
+    action: RETRIEVE_DOCS
+
+  - name: high_urgency_high_confidence
+    description: Trigger automated workflow when urgency is high and we are confident
+    conditions:
+      urgency: high
+      confidence: "> 0.7"
+    action: TRIGGER_WORKFLOW
+
+  - name: default
+    description: Fall back to documentation retrieval
+    conditions: {}
+    action: RETRIEVE_DOCS
