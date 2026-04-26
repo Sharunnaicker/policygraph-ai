@@ -33,7 +33,7 @@ async def extract_beliefs(text: str) -> BeliefState:
 
     client = anthropic.Anthropic()
     message = client.messages.create(
-        model="claude-sonnet-4-6",
+        model=os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001"),
         max_tokens=512,
         system=_SYSTEM_PROMPT,
         messages=[{"role": "user", "content": text}],
