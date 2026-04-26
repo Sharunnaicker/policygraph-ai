@@ -1,8 +1,7 @@
 import json
+import os
 import anthropic
 from ..models.belief import BeliefState
-
-_client = anthropic.Anthropic()
 
 _SYSTEM_PROMPT = """You are a belief extractor for a customer support AI system.
 Extract structured beliefs from the incoming support ticket text.
@@ -18,9 +17,22 @@ If customer tier is not mentioned, default to "free".
 If urgency is not clear, use "medium".
 """
 
+_MOCK_BELIEFS = BeliefState(
+    urgency="medium",
+    customer_tier="free",
+    confidence=0.5,
+    ambiguity=True,
+    missing_fields=[],
+    topic="unknown",
+)
+
 
 async def extract_beliefs(text: str) -> BeliefState:
-    message = _client.messages.create(
+    if not os.getenv("ANTHROPIC_API_KEY"):
+        return _MOCK_BELIEFS
+
+    client = anthropic.Anthropic()
+    message = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=512,
         system=_SYSTEM_PROMPT,

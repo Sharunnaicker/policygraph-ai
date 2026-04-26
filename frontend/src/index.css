@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-zinc-950 text-zinc-200 antialiased;
+    margin: 0;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100svh;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
