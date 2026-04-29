@@ -42,7 +42,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - ./backend:/app
+      - ./backend:/app/backend
 
 volumes:
   pg_data:

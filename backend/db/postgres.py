@@ -61,7 +61,13 @@ async def fetch_decisions(limit: int = 50) -> list[dict]:
             "FROM decisions ORDER BY created_at DESC LIMIT $1",
             limit,
         )
-        return [dict(r) for r in rows]
+        result = []
+        for r in rows:
+            row = dict(r)
+            if isinstance(row.get("belief_state"), str):
+                row["belief_state"] = json.loads(row["belief_state"])
+            result.append(row)
+        return result
 
 
 async def fetch_decision_by_id(decision_id: str) -> dict | None:
@@ -72,4 +78,9 @@ async def fetch_decision_by_id(decision_id: str) -> dict | None:
             "FROM decisions WHERE id = $1::uuid",
             decision_id,
         )
-        return dict(row) if row else None
+        if row is None:
+            return None
+        result = dict(row)
+        if isinstance(result.get("belief_state"), str):
+            result["belief_state"] = json.loads(result["belief_state"])
+        return result
